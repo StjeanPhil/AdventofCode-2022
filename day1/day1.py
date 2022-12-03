@@ -4,7 +4,7 @@
 # Blocks are seperated by an empty line
 
 # Problem 1: return highest total calories of an inventory
-# Problem 2: reutrn the sum of the 3 highes total calories of an inventory
+# Problem 2: return the sum of the 3 highest total calories of an inventory
 
 file = open("input.txt", "r")
 
