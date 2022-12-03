@@ -26,5 +26,6 @@ for line in file:
         currentSum = 0
 
 topSums = firstSum+secondSum+thirdSum
+
 print("Solution 1: ", firstSum)
 print("Solution 2: ", topSums)
