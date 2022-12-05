@@ -1,10 +1,5 @@
 import os
 
-file_name = "input.txt"
-file_path = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), file_name)
-# file = open(file_path, "r")
-
 
 def initValues(file):
     data = file
@@ -58,9 +53,8 @@ def moveP2(stacks, nums):
     return stacks
 
 
-def problemSolver(probNb):
-    file = open(file_path, "r")
-
+def problemSolver(probNb, filePath):
+    file = open(filePath, "r")
     print("Problem ", probNb, " :")
     stacks, nums = initValues(file)
     for num in nums:
@@ -71,5 +65,9 @@ def problemSolver(probNb):
     printSolution(stacks)
 
 
-problemSolver("1")
-problemSolver("2")
+file_name = "input.txt"
+file_path = os.path.join(os.path.dirname(
+    os.path.realpath(__file__)), file_name)
+
+problemSolver("1", file_path)
+problemSolver("2", file_path)
