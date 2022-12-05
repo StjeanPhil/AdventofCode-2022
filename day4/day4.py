@@ -41,5 +41,4 @@ for line in file:
 
 # Print answer
 print("Problem 1 :", total)
-
 print("Problem 2 :", partial)
