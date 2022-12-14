@@ -1,4 +1,4 @@
-import os
+import os,copy
 
 file_name = "input.txt"
 file_path = os.path.join(os.path.dirname(
@@ -23,38 +23,52 @@ class Road:
     def move(self):
         # check around for possible steps
         possiblesteps = []
-
         # right
-        if self.map[self.current[0]][self.current[1]+1].isalpha() & (self.current[1]+1) < len(self.map[0]):
-            possiblesteps.append([self.current[0], self.current[1]+1])
+        if (self.current[1]+1) < len(self.map[0]) and (self.map[self.current[0]][self.current[1]+1].isalpha()) :
+            #print("hitright")
+            possiblesteps.append([self.current[0], self.current[1]+1,">"])
+            
         # left
-        if self.map[self.current[0]][self.current[1]-1].isalpha() & self.current[1]-1 >= 0:
-            possiblesteps.append([self.current[0], self.current[1]-1])
+        if self.current[1]-1 >= 0 and self.map[self.current[0]][self.current[1]-1].isalpha() :
+            #print("hitleft")
+            possiblesteps.append([self.current[0], self.current[1]-1,"<"])
+            
         # down
-        if self.map[self.current[0]+1][self.current[1]].isalpha() & self.current[0]+1 < len(self.map):
-            possiblesteps.append([self.current[0]+1, self.current[1]])
+        if self.current[0]+1 < len(self.map) and self.map[self.current[0]+1][self.current[1]].isalpha() :
+            #print("hitdown")
+            possiblesteps.append([self.current[0]+1, self.current[1],"|"])
+            
         # up
-        if self.map[self.current[0]-1][self.current[1]].isalpha() & self.current[0]-1 >= 0:
-            possiblesteps.append([self.current[0]-1, self.current[1]])
+        if self.current[0]-1 >= 0 and self.map[self.current[0]-1][self.current[1]].isalpha() :
+            #print("hitup")
+            possiblesteps.append([self.current[0]-1, self.current[1],"^"])
+            
 
         # check posSteps for letter with ord() within 1 of current letter
         newRoads = []
+       # print("exploring possible steps")
+       # print(possiblesteps)
         for possible in possiblesteps:
 
             if ord(self.letter) == ord(self.map[possible[0]][possible[1]]) or \
-                    ord(self.letter) == ord(self.map[possible[0]][possible[1]])+1 or \
-                    ord(self.letter) == ord(self.map[possible[0]][possible[1]])-1:
-                newMap = self.map
-                newMap[possible[0]][possible[1]] = "#"
+                ord(self.letter) == ord(self.map[possible[0]][possible[1]])+1 or \
+                ord(self.letter) == ord(self.map[possible[0]][possible[1]])-1 or \
+                self.letter =="z" and self.map[possible[0]][possible[1]]=="E":
+                
+
                 latestLetter = self.map[possible[0]][possible[1]]
                 steps = self.steps+1
+                newMap= copy.deepcopy(self.map)
+                newMap[possible[0]][possible[1]] =possible[2]
                 newRoads.append(Road(newMap, possible, latestLetter, steps))
-        print("Creating new roads:", newRoads)
+
+        #print("Creating new roads:", newRoads)
         return newRoads
 
 
 def getPos(data):
     # Return the pos of the start and destination
+    print("getPos: ")
     start = []
     end = []
     for x in range(len(data)):
@@ -63,32 +77,40 @@ def getPos(data):
                 start = [x, y]
             elif data[x][y] == "E":
                 end = [x, y]
-
+    print(start,end)
     return start, end
 
 
 def solver(data):
+    print("solver:")
+    #Get the starting position and the ending position
     startPos, endPos = getPos(data)
+    #Set ourselves at the start
     currPos = startPos
+    #roads contains all the possible roads
     roads = [Road(data, currPos, "a", False)]
+    #solved contains all the roads who arrived at destination
     solved = []
-
+    #while there is roads to check:
     while roads:
-        print("check roads: ", roads)
         currRoad = roads.pop()
         newRoads = currRoad.move()
         for r in newRoads:
-            if r.current[0] != endPos[0] or r.current[1] != endPos[1]:
+            #print(r.current)
+            if r.map[endPos[0]][endPos[1]]=="E":
+                #print("ROAD ADDED")
                 roads.append(r)
             else:
+                #print("Solved!")
                 solved.append(r)
-        print("post while ", roads)
 
     print(solved)
     lowest = solved[0].steps
     for r in solved:
+        print("steps:",r.steps)
         if lowest > r.steps:
             lowest = r.steps
+    print("this the lowest:")
     return lowest
 
 
